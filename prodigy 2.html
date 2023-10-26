@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Basic CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #stopwatch {
+            font-size: 2em;
+        }
+
+        button {
+            font-size: 1em;
+            margin: 10px;
+        }
+
+        #lap-times {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stopwatch</h1>
+    <div id="stopwatch">00:00.00</div>
+    <button id="start">Start</button>
+    <button id="pause">Pause</button>
+    <button id="reset">Reset</button>
+    <button id="lap">Lap</button>
+    <div id="lap-times"></div>
+
+    <script>
+        // JavaScript for the stopwatch functionality
+        let startTime = 0;
+        let intervalId = null;
+
+        // Start button click event
+        document.getElementById('start').addEventListener('click', () => {
+            if (!intervalId) {
+                startTime = Date.now() - (startTime || 0);
+                intervalId = setInterval(updateStopwatch, 10);
+            }
+        });
+
+        // Pause button click event
+        document.getElementById('pause').addEventListener('click', () => {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        });
+
+        // Reset button click event
+        document.getElementById('reset').addEventListener('click', () => {
+            clearInterval(intervalId);
+            intervalId = null;
+            startTime = 0;
+            document.getElementById('stopwatch').textContent = '00:00.00';
+            document.getElementById('lap-times').innerHTML = '';
+        });
+
+        // Lap button click event
+        document.getElementById('lap').addEventListener('click', () => {
+            if (intervalId) {
+                const lapTime = Date.now() - startTime;
+                const lapTimeStr = formatTime(lapTime);
+                document.getElementById('lap-times').innerHTML += `<div>Lap: ${lapTimeStr}</div>`;
+            }
+        });
+
+        // Function to update the stopwatch display
+        function updateStopwatch() {
+            const elapsedTime = Date.now() - startTime;
+            document.getElementById('stopwatch').textContent = formatTime(elapsedTime);
+        }
+
+        // Function to format time in HH:MM:SS format
+        function formatTime(time) {
+            const date = new Date(time);
+            return date.toISOString().substr(14, 5) + '.' + (time % 1000);
+        }
+    </script>
+</body>
+</html>
